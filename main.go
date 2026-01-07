@@ -105,8 +105,7 @@ func traverseDir(path string, ch chan <- string) {
 		fmt.Printf("Error reading %s: %v\n", path, err)
 		return
 	}
-	
-	count := 0
+
 	for _, entry := range entries {
 		fullPath := filepath.Join(path, entry.Name())
 		if entry.IsDir() {
@@ -116,12 +115,6 @@ func traverseDir(path string, ch chan <- string) {
 			//fmt.Printf("<File>     %s\n", fullPath)
 			ch <- fullPath	// place the file into the channel so that a goroutine
 							// could pick it up from there
-			count++
-			
-			if count == CHAN_SIZE {
-				count = 0
-				runtime.Gosched()
-			}
 		}
 	}
 }
