@@ -13,6 +13,8 @@ import (
 	"sync/atomic"
 )
 
+const CHAN_SIZE = 1024
+
 /*Synchronization mechanism for all the goroutines and the main() which
   does the directory traversal and assignes work to the goroutines. When
   all the traversal is done, main() sets done = true. */
@@ -85,7 +87,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	ch := make(chan string, 1024)
+	ch := make(chan string, CHAN_SIZE)
 
 	done.Store(false)
 
@@ -116,7 +118,7 @@ func traverseDir(path string, ch chan <- string) {
 							// could pick it up from there
 			count++
 			
-			if count == 1024 {
+			if count == CHAN_SIZE {
 				count = 0
 				runtime.Gosched()
 			}
