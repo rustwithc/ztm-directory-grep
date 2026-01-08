@@ -97,6 +97,13 @@ func main() {
 	traverseDir(startPath, ch)
 	done.Store(true)	// full traversal is over
 	signal.Wait()
+
+	close(ch)
+	/*check if there is any file left in the channel that got
+	missed by the workers (goroutines), if yes, process them*/
+	for c := range ch {
+		grep(c)
+	}
 }
 
 func traverseDir(path string, ch chan <- string) {
